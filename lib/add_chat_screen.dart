@@ -26,14 +26,17 @@ class _AddChatScreenState extends State<AddChatScreen> {
       ),
       body: Column(
         children: [
-          MyTextField(
-            hintText: "Поиск",
-            obscureText: false,
-            controller: controller,
-            onChanged: (text) {
-              // Вызываем setState для обновления экрана при изменении текста в TextField
-              setState(() {});
-            },
+          Padding(
+            padding: const EdgeInsets.only(top: 10,bottom: 5),
+            child: MyTextField(
+              hintText: "Поиск",
+              obscureText: false,
+              controller: controller,
+              onChanged: (text) {
+                // Вызываем setState для обновления экрана при изменении текста в TextField
+                setState(() {});
+              },
+            ),
           ),
           // StreamBuilder should be used as a widget
           StreamBuilder(

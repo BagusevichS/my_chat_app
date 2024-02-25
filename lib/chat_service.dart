@@ -9,24 +9,28 @@ class ChatService{
   Stream<List<Map<String, dynamic>>> getUsersStream() {
     final String currentUserID = _auth.currentUser!.uid;
 
-    return _firestore.collection("Users").snapshots().asyncMap((snapshot) async {
+    return _firestore.collection("chat_rooms").snapshots().asyncMap((snapshot) async {
       List<Map<String, dynamic>> usersWithChat = [];
 
-      for (var userDoc in snapshot.docs) {
-        final userData = userDoc.data();
-        final otherUserID = userData['uid'];
+      for (var chatRoomDoc in snapshot.docs) {
+        // Получаем идентификаторы других участников чата
+        var members = List<String>.from(chatRoomDoc['members'] ?? []);
+        members.remove(currentUserID); // Убираем текущего пользователя
 
-        var chatRoomRef = _firestore.collection("chat_rooms").doc(getChatRoomID(currentUserID, otherUserID));
-        var membersDoc = await chatRoomRef.collection("members").doc("data").get();
-
-        if (membersDoc.exists) {
-          usersWithChat.add(userData);
+        // Получаем информацию о других участниках из коллекции "Users"
+        for (var otherUserID in members) {
+          var userDoc = await _firestore.collection("Users").doc(otherUserID).get();
+          if (userDoc.exists) {
+            usersWithChat.add(userDoc.data()!);
+          }
         }
       }
 
       return usersWithChat;
     });
   }
+
+
 
   String getChatRoomID(String userID1, String userID2) {
     List<String> ids = [userID1, userID2];
@@ -65,16 +69,16 @@ class ChatService{
     await _firestore.runTransaction((transaction) async {
       // Check if the members collection already exists
       var chatRoomRef = _firestore.collection("chat_rooms").doc(chatRoomID);
-      var membersDoc = await transaction.get(chatRoomRef.collection("members").doc("data"));
+      var membersDoc = await transaction.get(chatRoomRef);
 
       if (!membersDoc.exists) {
         // If members collection doesn't exist, create it
-        transaction.set(chatRoomRef.collection("members").doc("data"), {
-          'userIds': [currentUserID, receiverID],
+        transaction.set(chatRoomRef, {
+          'members': [currentUserID, receiverID],
         });
       } else {
         // If members collection exists, check and add new IDs
-        var currentMembers = membersDoc['userIds'].cast<String>();
+        var currentMembers = membersDoc['members'].cast<String>();
         if (!currentMembers.contains(currentUserID)) {
           currentMembers.add(currentUserID);
         }
@@ -83,8 +87,8 @@ class ChatService{
         }
 
         // Update the members collection with the modified user IDs
-        transaction.update(chatRoomRef.collection("members").doc("data"), {
-          'userIds': currentMembers,
+        transaction.update(chatRoomRef, {
+          'members': currentMembers,
         });
       }
 
