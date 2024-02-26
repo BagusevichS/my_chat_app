@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:my_chat_app/auth_service.dart';
-import 'package:my_chat_app/chat_bubble.dart';
-import 'package:my_chat_app/chat_service.dart';
+import 'package:my_chat_app/domain/services/auth_service.dart';
+import 'package:my_chat_app/widgets/chat_bubble.dart';
+import 'package:my_chat_app/domain/services/chat_service.dart';
 import 'package:my_chat_app/themes/theme_provider.dart';
 import 'package:my_chat_app/widgets/my_text_field.dart';
 import 'package:provider/provider.dart';
+
+import '../../domain/functions.dart';
 
 class ChatPage extends StatefulWidget {
 
@@ -33,10 +35,10 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     myFocusNode.addListener(() {
       if(myFocusNode.hasFocus){
-        Future.delayed(const Duration(milliseconds: 500),()=>scrollDown());
+        Future.delayed(const Duration(milliseconds: 500),()=>scrollDown(_scrollController));
       }
     });
-    Future.delayed(const Duration(milliseconds: 500),()=>scrollDown());
+    Future.delayed(const Duration(milliseconds: 500),()=>scrollDown(_scrollController));
   }
 
   @override
@@ -48,20 +50,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
 
-  void scrollDown(){
-    _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.fastOutSlowIn);
-  }
+
 
   void sendMessage() async {
     if(_messageController.text.trim().isNotEmpty){
       await _chatService.sendMessage(widget.receiverID, _messageController.text.trim());
       _messageController.clear();
-      scrollDown();
+      scrollDown(_scrollController);
     }
-    scrollDown();
+    scrollDown(_scrollController);
   }
 
   @override

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_chat_app/user_tile.dart';
+import 'package:my_chat_app/widgets/user_tile.dart';
 import 'package:my_chat_app/widgets/my_text_field.dart';
 
-import 'auth_service.dart';
+import '../../domain/services/auth_service.dart';
 import 'chat_page.dart';
-import 'chat_service.dart';
+import '../../domain/services/chat_service.dart';
 
 class AddChatScreen extends StatefulWidget {
   const AddChatScreen({Key? key}) : super(key: key);

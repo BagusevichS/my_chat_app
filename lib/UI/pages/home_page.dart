@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:my_chat_app/auth_service.dart';
-import 'package:my_chat_app/chat_service.dart';
+import 'package:my_chat_app/domain/services/auth_service.dart';
+import 'package:my_chat_app/domain/services/chat_service.dart';
 import 'package:my_chat_app/themes/theme_provider.dart';
-import 'package:my_chat_app/user_tile.dart';
+import 'package:my_chat_app/widgets/user_tile.dart';
 import 'package:provider/provider.dart';
 
 import 'add_chat_screen.dart';
 import 'chat_page.dart';
-import 'my_drawer.dart';
+import '../../widgets/my_drawer.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);

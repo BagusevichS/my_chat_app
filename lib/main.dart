@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_chat_app/themes/light_mode.dart';
 import 'package:my_chat_app/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'auth_gate.dart';
+import 'UI/pages/auth_gate.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

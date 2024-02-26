@@ -4,7 +4,8 @@ import 'package:my_chat_app/widgets/my_button.dart';
 import 'package:my_chat_app/widgets/my_text_field.dart';
 import 'package:provider/provider.dart';
 
-import 'auth_service.dart';
+import '../../domain/services/auth_service.dart';
+import '../../domain/functions.dart';
 
 class AuthPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -13,23 +14,7 @@ class AuthPage extends StatelessWidget {
 
   AuthPage({Key? key, this.onTap}) : super(key: key);
 
-  void login(BuildContext context) async {
-    final authService = AuthService();
-    try{
-      await authService.signInWithEmailPassword
-        (_emailController.text,
-          _passwController.text
-      );
-    }
-    catch(e){
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(e.toString()),
-          )
-      );
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +43,7 @@ class AuthPage extends StatelessWidget {
             const SizedBox(height: 5,),
             MyTextField(hintText: "Пароль", obscureText: true, controller: _passwController,),
             const SizedBox(height: 25,),
-            MyButton(text: "Войти", onTap:() => login(context),),
+            MyButton(text: "Войти", onTap:() => login(context,_emailController,_passwController),),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Row(

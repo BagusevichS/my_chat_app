@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_chat_app/auth_service.dart';
+import 'package:my_chat_app/domain/services/auth_service.dart';
 import 'package:my_chat_app/themes/theme_provider.dart';
 import 'package:my_chat_app/widgets/my_button.dart';
 import 'package:my_chat_app/widgets/my_text_field.dart';
@@ -15,46 +15,43 @@ class RegisterPage extends StatelessWidget {
   final void Function()? onTap;
   RegisterPage({Key? key, this.onTap}) : super(key: key);
 
-  void register(BuildContext context) {
+  void register(BuildContext context) async {
     final auth = AuthService();
 
     if (_passwController.text == _confirmController.text) {
       try {
-        auth.signUpWithEmailPassword(_emailController.text, _passwController.text);
+        await auth.signUpWithEmailPassword(_emailController.text, _passwController.text);
       } catch (e) {
         String errorMessage = 'Произошла ошибка во время регистрации';
-
         // Обрабатываем различные типы исключений
         if (e is FirebaseAuthException) {
-          switch (e.code) {
-            case 'weak-password':
-              errorMessage = 'Пароль должен содержать не менее 6 символов';
-              break;
-            case 'email-already-in-use':
-              errorMessage = 'Этот адрес электронной почты уже используется другим аккаунтом';
-              break;
-            default:
-              errorMessage = 'Неожиданная ошибка: ${e.message}';
+          if (e.code == 'weak-password') {
+            errorMessage = 'Пароль должен содержать не менее 6 символов';
+          } else if (e.code == 'email-already-in-use') {
+            errorMessage = 'Этот адрес электронной почты уже используется другим аккаунтом';
+          } else {
+
           }
         }
 
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(errorMessage),
+
+            title: Text(errorMessage,style: TextStyle(color: Color(0xFF81A7CC))),
           ),
         );
       }
-    }
-    else{
+    } else {
       showDialog(
-          context: context,
-          builder: (context)=> const AlertDialog(
-            title: Text("Пароли не совпадают."),
-          )
+        context: context,
+        builder: (context) => AlertDialog.adaptive(
+          title: Text("Пароли не совпадают.", style: TextStyle(color: Color(0xFF81A7CC))),
+        ),
       );
     }
   }
+
 
 
   @override

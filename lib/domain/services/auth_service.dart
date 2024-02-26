@@ -40,7 +40,7 @@ class AuthService{
 
       return userCredential;
     } on FirebaseAuthException catch(e){
-      throw Exception(e.code);
+      throw e;
     }
   }
 }

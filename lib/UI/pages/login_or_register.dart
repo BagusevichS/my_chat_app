@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_chat_app/register_page.dart';
+import 'package:my_chat_app/UI/pages/register_page.dart';
 import 'auth_page.dart';
 
 class LoginOrRegister extends StatefulWidget {

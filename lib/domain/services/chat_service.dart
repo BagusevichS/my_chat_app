@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_chat_app/message.dart';
+import 'package:my_chat_app/domain/entity/message.dart';
 
 class ChatService{
 
@@ -13,10 +13,14 @@ class ChatService{
       List<Map<String, dynamic>> usersWithChat = [];
 
       for (var chatRoomDoc in snapshot.docs) {
-        // Получаем идентификаторы других участников чата
+        // Получаем идентификаторы участников чата
         var members = List<String>.from(chatRoomDoc['members'] ?? []);
-        members.remove(currentUserID); // Убираем текущего пользователя
-
+        if(members.contains(currentUserID)){
+          members.remove(currentUserID); // Убираем текущего пользователя
+        }else{
+          members.clear();
+          members.add(currentUserID);
+        }
         // Получаем информацию о других участниках из коллекции "Users"
         for (var otherUserID in members) {
           var userDoc = await _firestore.collection("Users").doc(otherUserID).get();
